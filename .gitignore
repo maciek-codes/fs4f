@@ -1,5 +1,4 @@
 # Node.js
 node_modules/
-src/**/*.js
-tests/**/*.js
+dist/
 coverage/
