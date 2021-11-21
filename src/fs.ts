@@ -33,8 +33,8 @@ export class FileSystem {
         }
 
         // Go through items in current directory and try find a matching one
-        for (const item of this.cwd.children) {
-            var isDir = (item as Directory) !== undefined;
+        for (const item of this.cwd.list()) {
+            const isDir = (item as Directory) !== undefined;
             if (item.name === name && isDir) {
                 this.cwd = item as Directory;
                 return true;

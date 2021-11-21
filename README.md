@@ -17,7 +17,21 @@ To build the library run:
 `npm build`
 
 ## Testing
-To run tests: `npm test`
+To run tests: `npm test`.
+Tests use the [Jest](https://jestjs.io/) test framework.
 
 ## How to use it
-TBD
+
+To use the in-memory file system, simply instantiate the `FileSystem` object:
+
+```ts
+    const fs = new FileSystem();
+    var rootDir = fs.root();
+```
+
+### Features
+- Directories
+    - change current directory
+    - create a new directory
+    - list directory contents
+

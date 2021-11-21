@@ -6,7 +6,7 @@ describe('File System', () => {
         const fs = new FileSystem();
         const root_dir = fs.root();
         expect(root_dir.path()).toBe("/");
-        expect(root_dir.children).toHaveLength(0);
+        expect(root_dir.list()).toHaveLength(0);
         expect(fs.currentDir().path()).toBe(root_dir.path());
     });
 

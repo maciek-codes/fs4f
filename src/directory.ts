@@ -1,8 +1,12 @@
 import { File } from "./file";
 
+/**
+ * Union of possible file system item types
+ */
+export type FsItem = File | Directory;
+
 export interface Directory {
     name: string;
-    children: Iterable<File | Directory>;
     
     /**
      * Pointer to the parent directory or itself (if root dir)
@@ -19,13 +23,16 @@ export interface Directory {
      * @param name of the sub directory
      */
     createDir(name: string): Directory;
-}
 
-type FsItem = File | Directory;
+    /**
+     * Return a list with the contents of the directory
+     */
+    list(): FsItem[];
+}
 
 export class DirectoryImpl implements Directory {
     public name: string;
-    public children: FsItem[];
+    public children: (FsItem)[];
     private parentDir: Directory | null;
     
     constructor(name: string) {
@@ -35,7 +42,7 @@ export class DirectoryImpl implements Directory {
     }
 
     public path() : string {
-        var path : string = "";
+        let path = "";
         if (this.parent() !== this) {
             path = this.parent().path()
         }
@@ -52,10 +59,14 @@ export class DirectoryImpl implements Directory {
 
     public createDir(name: string): Directory {
         this.checkDuplicates(name);
-        var dir = new DirectoryImpl(name);
+        const dir = new DirectoryImpl(name);
         dir.parentDir = this;
         this.children.push(dir);
         return dir;
+    }
+
+    public list(): FsItem[] {
+        return this.children;
     }
 
     /**
