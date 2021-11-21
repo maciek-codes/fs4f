@@ -1,18 +1,19 @@
-import { Directory, DirectoryImpl } from "./directory";
+import { Directory } from "./directory";
+import { File } from "./file";
 
 export class FileSystem {
     private rootDir: Directory;
     private cwd: Directory;
 
     constructor() {
-        this.rootDir = new DirectoryImpl("");
+        this.rootDir = new Directory("");
         this.cwd = this.rootDir;
     }
 
     /**
      * Gets the root or top-level directory, always exists in the file system.
      */
-    public root(): Directory {
+    get root(): Directory {
         return this.rootDir;
     }
 
@@ -47,10 +48,16 @@ export class FileSystem {
     }
 
     /**
-     * Create a directory in current working directory
-     * @param path 
+     * Create a directory in the current working directory
      */
-    public createDir(path: string): Directory {
-        return this.cwd.createDir(path);
+    public createDir(name: string): Directory {
+        return this.cwd.createDir(name);
+    }
+
+    /**
+     * Create a file in the current working directory
+     */
+    public createFile(name: string): File {
+        return this.cwd.createFile(name);
     }
 }

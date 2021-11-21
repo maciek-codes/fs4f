@@ -5,33 +5,8 @@ import { File } from "./file";
  */
 export type FsItem = File | Directory;
 
-export interface Directory {
-    name: string;
-    
-    /**
-     * Pointer to the parent directory or itself (if root dir)
-     */
-    parent(): Directory | null;
-
-    /**
-     * Returns the full path of this directory
-     */
-    path(): string;
-
-    /**
-     * Creates a sub directory
-     * @param name of the sub directory
-     */
-    createDir(name: string): Directory;
-
-    /**
-     * Return a list with the contents of the directory
-     */
-    list(): FsItem[];
-}
-
-export class DirectoryImpl implements Directory {
-    public name: string;
+export class Directory {
+      public name: string;
     public children: (FsItem)[];
     private parentDir: Directory | null;
     
@@ -41,6 +16,9 @@ export class DirectoryImpl implements Directory {
         this.parentDir = parent;
     }
 
+    /**
+     * Returns the full path of this directory
+     */
     public path() : string {
         let path = "";
         if (this.parent() !== this) {
@@ -49,7 +27,10 @@ export class DirectoryImpl implements Directory {
         path += this.name + "/";
         return path;
     }
-
+ 
+    /**
+     * Pointer to the parent directory or itself (if root dir)
+     */
     public parent(): Directory {
         if (!this.parentDir) {
             return this;
@@ -57,13 +38,30 @@ export class DirectoryImpl implements Directory {
         return this.parentDir;
     }
 
+    /**
+     * Creates a sub directory
+     * @param name of the sub directory
+     */
     public createDir(name: string): Directory {
         this.checkDuplicates(name);
-        const dir = new DirectoryImpl(name, this);
+        const dir = new Directory(name, this);
         this.children.push(dir);
         return dir;
     }
 
+    /**
+     * Create a file in this directory
+     */
+    createFile(name: string): File {
+        this.checkDuplicates(name);
+        const file = new File(name);
+        this.children.push(file);
+        return file;
+    }
+  
+    /**
+     * Return a list with the contents of the directory
+     */
     public list(): FsItem[] {
         return this.children;
     }

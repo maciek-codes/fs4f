@@ -4,7 +4,7 @@ import { FileSystem } from '../src/fs' ;
 describe('File System', () => {
     test('returns a root directory', () => {
         const fs = new FileSystem();
-        const root_dir = fs.root();
+        const root_dir = fs.root;
         expect(root_dir.path()).toBe("/");
         expect(root_dir.list()).toHaveLength(0);
         expect(fs.currentDir().path()).toBe(root_dir.path());
@@ -12,8 +12,8 @@ describe('File System', () => {
 
     test('can go to another directory', () => {
         const fs = new FileSystem();
-        fs.root().createDir("music").createDir("albums");
-        fs.root().createDir("photos");
+        fs.root.createDir("music").createDir("albums");
+        fs.root.createDir("photos");
 
         expect(fs.currentDir().path()).toBe("/");
         
@@ -49,5 +49,10 @@ describe('File System', () => {
     test('can create a directory in current dir', () => {
         const fs = new FileSystem();
         expect(fs.createDir("foo")).not.toBeNull();
+    });
+
+    test('can create a file in current dir', () => {
+        const fs = new FileSystem();
+        expect(fs.createFile("foo")).not.toBeNull();
     });
 });

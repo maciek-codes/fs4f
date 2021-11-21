@@ -2,7 +2,7 @@ import { FileSystem } from "../src/fs";
 
 describe("Directory", () => {
     test("can create a sub-directory", () => {
-        const parentDir = new FileSystem().root();
+        const parentDir = new FileSystem().root;
         expect(parentDir.list()).toHaveLength(0);
 
         const subDir = parentDir.createDir("docs");
@@ -15,7 +15,7 @@ describe("Directory", () => {
     });
 
     test("can't have duplicate child items", () => {
-        const parentDir = new FileSystem().root();
+        const parentDir = new FileSystem().root;
         expect(parentDir.list()).toHaveLength(0);
 
         parentDir.createDir("docs");
@@ -24,15 +24,17 @@ describe("Directory", () => {
     });
 
     test("can list its contents", () => {
-        const parentDir = new FileSystem().root();
+        const parentDir = new FileSystem().root;
         expect(parentDir.list()).toHaveLength(0);
 
         const docsDir = parentDir.createDir("docs");
         const videosDir = parentDir.createDir("videos");
         const picturesDir = parentDir.createDir("pictures");
+        const textFile = parentDir.createFile("myDoc.txt");
         const items = parentDir.list();
         expect(items).toContain(docsDir);
         expect(items).toContain(videosDir);
         expect(items).toContain(picturesDir);
+        expect(items).toContain(textFile);
     });
 })

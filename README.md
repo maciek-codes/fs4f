@@ -26,7 +26,7 @@ To use the in-memory file system, simply instantiate the `FileSystem` object:
 
 ```ts
     const fs = new FileSystem();
-    var rootDir = fs.root();
+    var rootDir = fs.root;
 ```
 
 ### Features
