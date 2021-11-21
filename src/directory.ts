@@ -40,9 +40,22 @@ export class DirectoryImpl implements Directory {
     }
 
     public createDir(name: string): Directory {
+        this.checkDuplicates(name);
         var dir = new DirectoryImpl(name);
         dir.parent = this;
         this.children.push(dir);
         return dir;
+    }
+
+    /**
+     * Check if any child item is named like this
+     * @param name name to be checked
+     */
+    private checkDuplicates(name: string) {
+        for (const item of this.children) {
+            if (item.name === name) {
+                throw new Error("Duplicate directory");
+            }
+        }
     }
 }
