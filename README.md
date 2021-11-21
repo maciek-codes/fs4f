@@ -34,4 +34,3 @@ To use the in-memory file system, simply instantiate the `FileSystem` object:
     - change current directory
     - create a new directory
     - list directory contents
-

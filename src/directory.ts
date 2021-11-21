@@ -35,10 +35,10 @@ export class DirectoryImpl implements Directory {
     public children: (FsItem)[];
     private parentDir: Directory | null;
     
-    constructor(name: string) {
+    constructor(name: string, parent?: Directory) {
         this.name = name;
         this.children = [];
-        this.parentDir = null;
+        this.parentDir = parent;
     }
 
     public path() : string {
@@ -59,8 +59,7 @@ export class DirectoryImpl implements Directory {
 
     public createDir(name: string): Directory {
         this.checkDuplicates(name);
-        const dir = new DirectoryImpl(name);
-        dir.parentDir = this;
+        const dir = new DirectoryImpl(name, this);
         this.children.push(dir);
         return dir;
     }

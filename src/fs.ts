@@ -9,6 +9,9 @@ export class FileSystem {
         this.cwd = this.rootDir;
     }
 
+    /**
+     * Gets the root or top-level directory, always exists in the file system.
+     */
     public root(): Directory {
         return this.rootDir;
     }
