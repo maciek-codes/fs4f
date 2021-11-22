@@ -22,10 +22,10 @@ export class Directory {
     /**
      * Returns the full path of this directory
      */
-    public path() : string {
+    public get path() : string {
         let path = "";
         if (this.parent() !== this) {
-            path = this.parent().path()
+            path = this.parent().path;
         }
         path += this.name + "/";
         return path;
@@ -56,7 +56,7 @@ export class Directory {
     /**
      * Create a file in this directory
      */
-    createFile(name: string): File {
+    public createFile(name: string): File {
         this.checkDuplicates(name);
         const file = new File(name);
         this.children.push(file);

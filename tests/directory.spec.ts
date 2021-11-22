@@ -7,11 +7,11 @@ describe("Directory", () => {
 
         const subDir = parentDir.createDir("docs");
         expect(parentDir.list()).toHaveLength(1);
-        expect(subDir.path()).toBe("/docs/");
+        expect(subDir.path).toBe("/docs/");
 
         const subDir2 = subDir.createDir("work");
         expect(subDir.list()).toHaveLength(1);
-        expect(subDir2.path()).toBe("/docs/work/");
+        expect(subDir2.path).toBe("/docs/work/");
     });
 
     test("can't have duplicate child items", () => {
