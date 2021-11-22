@@ -18,9 +18,14 @@ describe("Directory", () => {
         const parentDir = new FileSystem().root;
         expect(parentDir.list()).toHaveLength(0);
 
-        parentDir.createDir("docs");
-        expect(() => parentDir.createDir("docs")).toThrowError();
+        // Can't create a different item with the same name
+        const docDir = parentDir.createDir("docs");
+        expect(() => parentDir.createFile("docs")).toThrowError();
         expect(parentDir.list()).toHaveLength(1);
+
+        // But trying to create the same item should work
+        const sameDir = parentDir.createDir("docs");
+        expect(sameDir.path).toBe(docDir.path);
     });
 
     test("can list its contents", () => {

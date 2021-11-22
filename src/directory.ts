@@ -1,4 +1,5 @@
 import { File } from "./file";
+import { FsUtil } from "./util";
 import { Metadata } from "./metadata";
 
 /**
@@ -46,8 +47,14 @@ export class Directory {
      * @param name of the sub directory
      */
     public createDir(name: string): Directory {
-        this.checkDuplicates(name);
-        const dir = new Directory(name, this);
+        let dir = this.findExisting(name);
+        if (dir && !FsUtil.isDirectory(dir)) {
+            throw new Error("File already exists");
+        } else if (dir) {
+            return dir as Directory;
+        }
+        
+        dir = new Directory(name, this);
         this.children.push(dir);
         this.metadata.updateModified();
         return dir;
@@ -57,8 +64,14 @@ export class Directory {
      * Create a file in this directory
      */
     public createFile(name: string): File {
-        this.checkDuplicates(name);
-        const file = new File(name);
+        let file = this.findExisting(name);
+        if (file && !FsUtil.isFile(file)) {
+            throw new Error("File already exists");
+        } else if (file) {
+            return file as File;
+        }
+        
+        file = new File(name);
         this.children.push(file);
         this.metadata.updateModified();
         return file;
@@ -75,10 +88,10 @@ export class Directory {
      * Check if any child item is named like this
      * @param name name to be checked
      */
-    private checkDuplicates(name: string) {
+    private findExisting(name: string) {
         for (const item of this.children) {
             if (item.name === name) {
-                throw new Error("Duplicate directory");
+                return item;
             }
         }
     }

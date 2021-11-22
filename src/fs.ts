@@ -1,6 +1,7 @@
 import { Directory } from "./directory";
 import { File } from "./file";
 import { FsUtil } from "./util";
+import { Path } from './path';
 
 export class FileSystem {
     private rootDir: Directory;
@@ -30,33 +31,58 @@ export class FileSystem {
      * @param path 
      */
     public changeDir(name: string) {
-        if (name === "..") {
-            if (this.cwd.parent) {
+        const path = Path.fromString(name);
+        const prevCwd = this.cwd;
+        let dir = path.isAbsolute ? this.root : this.cwd;
+        for (const component of path.components) {
+            // Go up if needed
+            if (component == "..") {
                 this.cwd = this.cwd.parent();
+                continue;
             }
-            return true;
-        }
-
-        const dir = this.findDir(this.cwd, name);
-        if (dir) {
+            dir = this.findDir(dir, component);
+            if (!dir) {
+                this.cwd = prevCwd;
+                return false;
+            }
             this.cwd = dir;
-            return true;
         }
-        return false;
+        return true;
     }
 
     /**
      * Create a directory in the current working directory
      */
     public createDir(name: string): Directory {
-        return this.cwd.createDir(name);
+        const path = Path.fromString(name);
+        let dir = path.isAbsolute ? this.root : this.cwd;
+        for (const component of path.components) {
+            if (component == "..") {
+                dir = dir.parent();
+            } else {
+                dir = dir.createDir(component);
+            }
+        }
+        return dir;
     }
 
     /**
      * Create a file in the current working directory
      */
     public createFile(name: string): File {
-        return this.cwd.createFile(name);
+        const path = Path.fromString(name);
+
+        // If not the last component of a path, create a directory first.
+        const fileName = path.components[path.components.length - 1];
+        const dirPart = name.substr(0, name.length - fileName.length)
+        if (fileName == "..") {
+            throw new Error("Provide a valid file name");
+        }
+        let dir: Directory = this.cwd;
+        if (dirPart.length > 0) {
+            dir = this.createDir(dirPart);
+        }
+        return dir.createFile(fileName);
     }
 
     /** Copy a directory and all of its contents to a new location in the current

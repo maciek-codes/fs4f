@@ -55,6 +55,38 @@ describe('File System', () => {
     test('can create a file in current dir', () => {
         const fs = new FileSystem();
         expect(fs.createFile("foo")).not.toBeNull();
+        expect(() => fs.createFile("/foo/..")).toThrowError();
+    });
+
+    test('can create a file in a path', () => {
+        const fs = new FileSystem();
+        const file = fs.createFile("/tmp/foo.txt");
+        expect(file.name).toBe("foo.txt");
+        fs.changeDir("/tmp");
+        expect(fs.currentDir().list()).toHaveLength(1);
+
+        fs.createFile("/foo.txt");
+        expect(fs.root.list()).toHaveLength(2);
+    });
+
+    test('can create directories from absolute path', () => {
+        const fs = new FileSystem();
+        expect(fs.createDir("/foo/bar")).not.toBeNull();
+        expect(fs.createDir("/foo/baz/xyz")).not.toBeNull();
+        expect(fs.createDir("/foo/baz/xyz/../abc")).not.toBeNull();
+
+        // Return a handle to the existing dir
+        const fooDir = fs.createDir("/foo");
+        expect(fooDir.list()).toHaveLength(2);
+    });
+
+    test('can create directories from relative path', () => {
+        const fs = new FileSystem();
+        fs.createDir("/tmp/xyz");
+        fs.changeDir("/tmp/xyz/");
+
+        const fooBarDir = fs.createDir("foo/bar/");
+        expect(fooBarDir.path).toBe("/tmp/xyz/foo/bar/")
     });
 
     test('can copy directories', () => {
