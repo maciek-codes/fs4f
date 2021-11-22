@@ -1,5 +1,6 @@
 import 'jest';
 import { FileSystem } from '../src/fs' ;
+import { File } from '../src/file';
 
 describe('File System', () => {
     test('returns a root directory', () => {
@@ -54,5 +55,29 @@ describe('File System', () => {
     test('can create a file in current dir', () => {
         const fs = new FileSystem();
         expect(fs.createFile("foo")).not.toBeNull();
+    });
+
+    test('can copy directories', () => {
+        const fs = new FileSystem();
+        const docsDir = fs.root.createDir("docs");
+        docsDir.createFile("doc1.txt").write("Hello doc");
+        const importantDir = docsDir.createDir("important");
+        importantDir.createFile("super-important.xls").write("VIP Info");
+
+        const backupDir = fs.copyDir("docs", "docs - backup");
+        expect(fs.root.list()).toContain(backupDir);
+        fs.changeDir("docs - backup");
+        expect(fs.currentDir().path()).toBe("/docs - backup/");
+        const backupContents = fs.currentDir().list();
+        expect(backupContents).toHaveLength(2);
+        fs.changeDir("important");
+        const copiedFile = fs.currentDir().list()[0] as File;
+        expect(copiedFile.name).toBe("super-important.xls");
+        expect(copiedFile.contents).toBe("VIP Info");
+    });
+
+    test('fails to copy if source doesn\'t exist', () => {
+        const fs = new FileSystem();
+        expect(() => fs.copyDir("docs", "docs - backup")).toThrowError();
     });
 });

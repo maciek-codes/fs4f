@@ -1,5 +1,6 @@
-import { Directory } from "./directory";
+import { Directory, FsItem } from "./directory";
 import { File } from "./file";
+import { FsUtil } from "./util";
 
 export class FileSystem {
     private rootDir: Directory;
@@ -36,13 +37,10 @@ export class FileSystem {
             return true;
         }
 
-        // Go through items in current directory and try find a matching one
-        for (const item of this.cwd.list()) {
-            const isDir = (item as Directory) !== undefined;
-            if (item.name === name && isDir) {
-                this.cwd = item as Directory;
-                return true;
-            }
+        const dir = this.findDir(this.cwd, name);
+        if (dir) {
+            this.cwd = dir;
+            return true;
         }
         return false;
     }
@@ -59,5 +57,49 @@ export class FileSystem {
      */
     public createFile(name: string): File {
         return this.cwd.createFile(name);
+    }
+
+    /** Copy a directory and all of its contents to a new location in the current
+     * working directory
+     */
+    public copyDir(fromDir: string, toDir: string, workingDir = this.cwd, destDir = this.cwd): Directory {
+        // Check if the fromDir exists in the working directory
+        let sourceDir: Directory = this.findDir(workingDir, fromDir);
+        if (!sourceDir) {
+            throw new Error(`Source directory ${fromDir} not found.`);
+        }
+
+        const copiedDir = destDir.createDir(toDir);
+        this.copyDirHelper(sourceDir, copiedDir);
+        return copiedDir;
+    }
+
+    /** 
+     * Helper for copying contents of directories
+     */
+    private copyDirHelper(sourceDir: Directory, destDir: Directory) {
+        for (var item of sourceDir.list()) {
+           if (FsUtil.isDirectory(item)) {
+                this.copyDir(item.name, item.name, sourceDir, destDir)
+            } else if (FsUtil.isFile(item)) {
+                const copiedFile = destDir.createFile(item.name)
+                copiedFile.write((item as File).contents);
+            }
+        }
+    }
+
+    /**
+     * Find a directory matching the name in a given working directory
+     * @param dir working directory
+     * @param name name to match
+     * @returns directory found
+     */
+    private findDir(dir: Directory, name: string): Directory {
+        for (const item of dir.list()) {
+            if (item.name === name && FsUtil.isDirectory(item)) {
+                return item as Directory;
+            }
+        }
+        return null;
     }
 }
