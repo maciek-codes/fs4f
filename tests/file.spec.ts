@@ -16,4 +16,9 @@ describe("File", () => {
         f1.write("Hello world2");
         expect(f1.contents).toBe("Hello world2");
     });
+
+    test("returns empty string if no contents", () => {
+        const f1 = new File("test.txt");
+        expect(f1.contents).toBe("");
+    });
 });
