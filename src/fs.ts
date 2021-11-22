@@ -117,7 +117,7 @@ export class FileSystem {
      * @param name name of file or directory to search
      * @param searchDir - optional - optional start directory, defaults to the root
      */
-     public find(name: string, searchDir: Directory = this.root): any {
+     public find(name: string, searchDir: Directory = this.root): FsItem[] {
         // Traverse the directory.
         // This could be replaced with an index (hashmap/dictionary) to speed-up the lookup.
         // For now use a DFS traversal.
@@ -127,7 +127,7 @@ export class FileSystem {
         const checked: Set<Directory> = new Set<Directory>();
         dirsToCheck.push(searchDir);
 
-        const results = [];
+        const results: FsItem[] = new Array<FsItem>();
         while (dirsToCheck.length > 0) {
             const next = dirsToCheck.pop();
             checked.add(next);

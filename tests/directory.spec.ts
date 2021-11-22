@@ -26,6 +26,14 @@ describe("Directory", () => {
         // But trying to create the same item should work
         const sameDir = parentDir.createDir("docs");
         expect(sameDir.path).toBe(docDir.path);
+
+        // Can't have directory named same as a file
+        const file = parentDir.createFile("foo");
+        expect(file).not.toBeNull();
+        expect(() => parentDir.createDir("foo")).toThrowError();
+
+        // Trying to return the same file should work
+        expect(parentDir.createFile("foo")).toBe(file);
     });
 
     test("can list its contents", () => {
