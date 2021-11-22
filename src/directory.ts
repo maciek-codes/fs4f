@@ -6,7 +6,7 @@ import { File } from "./file";
 export type FsItem = File | Directory;
 
 export class Directory {
-      public name: string;
+    public name: string;
     public children: (FsItem)[];
     private parentDir: Directory | null;
     
