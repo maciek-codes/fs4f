@@ -1,4 +1,4 @@
-import { Directory, FsItem } from "./directory";
+import { Directory } from "./directory";
 import { File } from "./file";
 import { FsUtil } from "./util";
 
@@ -64,7 +64,7 @@ export class FileSystem {
      */
     public copyDir(fromDir: string, toDir: string, workingDir = this.cwd, destDir = this.cwd): Directory {
         // Check if the fromDir exists in the working directory
-        let sourceDir: Directory = this.findDir(workingDir, fromDir);
+        const sourceDir: Directory = this.findDir(workingDir, fromDir);
         if (!sourceDir) {
             throw new Error(`Source directory ${fromDir} not found.`);
         }
@@ -78,7 +78,7 @@ export class FileSystem {
      * Helper for copying contents of directories
      */
     private copyDirHelper(sourceDir: Directory, destDir: Directory) {
-        for (var item of sourceDir.list()) {
+        for (const item of sourceDir.list()) {
            if (FsUtil.isDirectory(item)) {
                 this.copyDir(item.name, item.name, sourceDir, destDir)
             } else if (FsUtil.isFile(item)) {
