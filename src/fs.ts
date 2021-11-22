@@ -74,6 +74,19 @@ export class FileSystem {
         return copiedDir;
     }
 
+    /**
+     * Remove a directory with a given name
+     * @param name
+     */
+    public removeDir(name: string) {
+        const dir = this.findDir(this.cwd, name);
+        if (!dir) {
+            throw new Error('Method not implemented.');
+        }
+        this.cwd.children.splice(this.cwd.children.indexOf(dir), 1);
+    }
+
+
     /** 
      * Helper for copying contents of directories
      */

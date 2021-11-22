@@ -80,4 +80,16 @@ describe('File System', () => {
         const fs = new FileSystem();
         expect(() => fs.copyDir("docs", "docs - backup")).toThrowError();
     });
+
+    test ('can remove a dir in current working dir', () => {
+        const fs = new FileSystem();
+        fs.root.createDir("docs");
+        fs.removeDir("docs");
+        expect(fs.root.list()).toHaveLength(0);
+    });
+
+    test('fails to remove a dir if it doesn\'t exist', () => {
+        const fs = new FileSystem();
+        expect(() => fs.removeDir("docs")).toThrowError();
+    });
 });
