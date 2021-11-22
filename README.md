@@ -10,12 +10,20 @@ This is by no means production level library. If you are looking for a serious i
 I am  using node v16.
 I recommend using [Volta](https://docs.volta.sh/guide/) to automatically pick the right runtime version.
 
+When you first check out, install the dependencies by running
+`npm install`
+
 To build the library run:
-`npm build`. The build output is ES6 compatible JavaScript. The files are using CommonJS module format.
+`npm run build`. The build output is ES6 compatible JavaScript. The files are using CommonJS module format.
 
 ## Testing
-To run tests: `npm test`.
+To run tests: `npm run test`.
 Tests use the [Jest](https://jestjs.io/) test framework.
+
+You can also keep the tests running when the files change:
+`npm run test:watch`.
+
+The test output should include information about the code coverage.
 
 ## How to use it
 
