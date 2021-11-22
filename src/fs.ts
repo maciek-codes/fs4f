@@ -124,7 +124,7 @@ export class FileSystem {
         // For now use a DFS traversal.
         const dirsToCheck: Directory[] = [];
 
-        // Preven any cycles when we add symlinks
+        // Prevent any cycles when we add symlinks
         const checked: Set<Directory> = new Set<Directory>();
         dirsToCheck.push(searchDir);
 
