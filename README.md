@@ -30,14 +30,14 @@ The test output should include information about the code coverage.
 To use the in-memory file system, simply instantiate the `FileSystem` object. 
 
 The File System is very basic, has no concept of volumes or persistance. The FS is created with a root directory.
-The `..` has a special meaning and allows you to traverse tha path to the parent.
+The `..` has a special meaning and allows you to traverse the path to the parent.
 
 Example usage:
 ```ts
     import { FileSystem } from './src/fs.ts';
 
     const fs = new FileSystem();
-    var rootDir = fs.root;
+    const rootDir = fs.root; // Pointer to the root directory
 
     // Create directories
     const dir = fs.createDir("/tmp/path"); // tmp and path were created
@@ -61,7 +61,7 @@ Example usage:
 ```
 
 ### Features
-- Each file system item has a name and metadata (creation and mod timestamp
+- Each file system item has a name and metadata (creation and modification timestamp)
 - Directories
     - change current directory
     - create a new directory
