@@ -95,11 +95,7 @@ export class FileSystem {
      * @returns directory found
      */
     private findDir(dir: Directory, name: string): Directory {
-        for (const item of dir.list()) {
-            if (item.name === name && FsUtil.isDirectory(item)) {
-                return item as Directory;
-            }
-        }
-        return null;
+        return dir.list().find(item =>
+            item.name === name && FsUtil.isDirectory(item)) as Directory;
     }
 }

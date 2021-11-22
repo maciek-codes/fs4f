@@ -21,4 +21,15 @@ describe("File", () => {
         const f1 = new File("test.txt");
         expect(f1.contents).toBe("");
     });
+
+    test("modified at updates on writes", async () => {
+        const f1 = new File("test.txt");
+        const createdAt = f1.metadata.createdAt;
+        const modifiedAt = f1.metadata.modifiedAt;
+        
+        await new Promise((r) => setTimeout(r, 50));
+        f1.write("blabla");
+        expect(f1.metadata.createdAt).toBe(createdAt);
+        expect(f1.metadata.modifiedAt.valueOf()).toBeGreaterThan(modifiedAt.valueOf());
+    });
 });

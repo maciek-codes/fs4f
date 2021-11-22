@@ -37,4 +37,15 @@ describe("Directory", () => {
         expect(items).toContain(picturesDir);
         expect(items).toContain(textFile);
     });
+
+    test("modified at updates when items added", async () => {
+        const parentDir = new FileSystem().root;
+        const createdAt = parentDir.metadata.createdAt;
+        const modifiedAt = parentDir.metadata.modifiedAt;
+        // Let some time pass
+        await new Promise((r) => setTimeout(r, 50));
+        parentDir.createFile("blabla");
+        expect(parentDir.metadata.createdAt).toBe(createdAt);
+        expect(parentDir.metadata.modifiedAt.valueOf()).toBeGreaterThan(modifiedAt.valueOf());    
+    });
 })

@@ -1,4 +1,5 @@
 import { File } from "./file";
+import { Metadata } from "./metadata";
 
 /**
  * Union of possible file system item types
@@ -6,7 +7,8 @@ import { File } from "./file";
 export type FsItem = File | Directory;
 
 export class Directory {
-    public name: string;
+    public readonly name: string;
+    public readonly metadata: Metadata;
     public children: (FsItem)[];
     private parentDir: Directory | null;
     
@@ -14,6 +16,7 @@ export class Directory {
         this.name = name;
         this.children = [];
         this.parentDir = parent;
+        this.metadata = new Metadata();
     }
 
     /**
@@ -46,6 +49,7 @@ export class Directory {
         this.checkDuplicates(name);
         const dir = new Directory(name, this);
         this.children.push(dir);
+        this.metadata.updateModified();
         return dir;
     }
 
@@ -56,6 +60,7 @@ export class Directory {
         this.checkDuplicates(name);
         const file = new File(name);
         this.children.push(file);
+        this.metadata.updateModified();
         return file;
     }
   

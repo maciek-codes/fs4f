@@ -1,3 +1,5 @@
+import { Metadata } from "./metadata";
+
 /**
  * Represents a file in the in-memory file system.
  * The contents of the file are stored as a Buffer (byte sequence, fixed-length) encoded in utf-8.
@@ -6,6 +8,7 @@
  */
 export class File {
     readonly name: string;
+    readonly metadata: Metadata;
     private _contents?: Buffer;
     
     /**
@@ -20,6 +23,7 @@ export class File {
 
     constructor(name: string) {
         this.name = name;
+        this.metadata = new Metadata();
     }
 
     /**
@@ -30,6 +34,7 @@ export class File {
     public write(toWrite: string) : number {
         Buffer.from
         this._contents = Buffer.from(toWrite, 'utf-8');
+        this.metadata.updateModified();
         return this._contents.length;
     }
 }
