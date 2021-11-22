@@ -47,6 +47,7 @@ export class Directory {
      * @param name of the sub directory
      */
     public createDir(name: string): Directory {
+        FsUtil.validateName(name);
         let dir = this.findExisting(name);
         if (dir && !FsUtil.isDirectory(dir)) {
             throw new Error("File already exists");
@@ -64,6 +65,7 @@ export class Directory {
      * Create a file in this directory
      */
     public createFile(name: string): File {
+        FsUtil.validateName(name);
         let file = this.findExisting(name);
         if (file && !FsUtil.isFile(file)) {
             throw new Error("File already exists");

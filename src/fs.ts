@@ -36,7 +36,7 @@ export class FileSystem {
         let dir = path.isAbsolute ? this.root : this.cwd;
         for (const component of path.components) {
             // Go up if needed
-            if (component == "..") {
+            if (component == Path.ParentPath) {
                 this.cwd = this.cwd.parent();
                 continue;
             }
@@ -57,7 +57,7 @@ export class FileSystem {
         const path = Path.fromString(name);
         let dir = path.isAbsolute ? this.root : this.cwd;
         for (const component of path.components) {
-            if (component == "..") {
+            if (component == Path.ParentPath) {
                 dir = dir.parent();
             } else {
                 dir = dir.createDir(component);
@@ -75,7 +75,7 @@ export class FileSystem {
         // If not the last component of a path, create a directory first.
         const fileName = path.components[path.components.length - 1];
         const dirPart = name.substr(0, name.length - fileName.length)
-        if (fileName == "..") {
+        if (fileName == Path.ParentPath) {
             throw new Error("Provide a valid file name");
         }
         let dir: Directory = this.cwd;
@@ -85,7 +85,8 @@ export class FileSystem {
         return dir.createFile(fileName);
     }
 
-    /** Copy a directory and all of its contents to a new location in the current
+    /** 
+     * Copy a directory and all of its contents to a new location in the current
      * working directory
      */
     public copyDir(fromDir: string, toDir: string, workingDir = this.cwd, destDir = this.cwd): Directory {

@@ -14,6 +14,21 @@ describe("Directory", () => {
         expect(subDir2.path).toBe("/docs/work/");
     });
 
+    test("can't be named with white space only", () => {
+        const parentDir = new FileSystem().root;
+        expect(() => parentDir.createDir(" ")).toThrowError();
+        expect(() => parentDir.createDir("  ")).toThrowError();
+        expect(() => parentDir.createDir(" \n\t ")).toThrowError();
+    });
+
+    test("can't have new-line or tabs", () => {
+        const parentDir = new FileSystem().root;
+        ["foo \n bar", '', " foo ", "\r\n", " \ttabs"].forEach(str => {
+            expect(() => parentDir.createDir(str)).toThrowError();
+            expect(() => parentDir.createFile(str)).toThrowError();
+        });
+    });
+
     test("can't have duplicate child items", () => {
         const parentDir = new FileSystem().root;
         expect(parentDir.list()).toHaveLength(0);

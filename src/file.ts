@@ -1,4 +1,5 @@
 import { Metadata } from "./metadata";
+import { FsUtil } from "./util";
 
 /**
  * Represents a file in the in-memory file system.
@@ -22,6 +23,7 @@ export class File {
     }
 
     constructor(name: string) {
+        FsUtil.validateName(name);
         this.name = name;
         this.metadata = new Metadata();
     }

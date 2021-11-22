@@ -1,10 +1,11 @@
 
 export class Path {
     public static readonly Separator = '/';
+    public static readonly ParentPath = "..";
     public readonly components: string[];
     public readonly isAbsolute;
 
-    private constructor(components: string[], isAbsolute) {
+    private constructor(components: string[], isAbsolute: boolean) {
         this.components = components;
         this.isAbsolute = isAbsolute;
     }
