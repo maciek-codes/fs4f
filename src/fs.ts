@@ -1,4 +1,4 @@
-import { Directory } from "./directory";
+import { Directory, FsItem } from "./directory";
 import { File } from "./file";
 import { FsUtil } from "./util";
 import { Path } from './path';
@@ -102,16 +102,49 @@ export class FileSystem {
 
     /**
      * Remove a directory with a given name
-     * @param name
      */
     public removeDir(name: string) {
-        const dir = this.findDir(this.cwd, name);
-        if (!dir) {
-            throw new Error('Method not implemented.');
-        }
-        this.cwd.children.splice(this.cwd.children.indexOf(dir), 1);
+        this.removeHelper(name, FsUtil.isDirectory);
     }
 
+    /** Remove a file with a given name if exsits */
+    public removeFile(name: string) {
+        this.removeHelper(name, FsUtil.isFile);
+    }
+
+    /**
+     * Basic find functionality - it tries to find items with a full match of the name
+     * @param name name of file or directory to search
+     * @param searchDir - optional - optional start directory, defaults to the root
+     */
+     public find(name: string, searchDir: Directory = this.root): any {
+        // Traverse the directory.
+        // This could be replaced with an index (hashmap/dictionary) to speed-up the lookup.
+        // For now use a DFS traversal.
+        const dirsToCheck: Directory[] = [];
+
+        // Preven any cycles when we add symlinks
+        const checked: Set<Directory> = new Set<Directory>();
+        dirsToCheck.push(searchDir);
+
+        const results = [];
+        while (dirsToCheck.length > 0) {
+            const next = dirsToCheck.pop();
+            checked.add(next);
+            for (const item of next.list()) {
+                if (FsUtil.isDirectory(item) && !checked.has(item as Directory)) {
+                    dirsToCheck.push(item as Directory);
+                }
+
+                // Check for the exact match
+                if (item.name === name) {
+                    results.push(item);
+                }
+            }
+        }
+
+        return results;
+    }
 
     /** 
      * Helper for copying contents of directories
@@ -136,5 +169,25 @@ export class FileSystem {
     private findDir(dir: Directory, name: string): Directory {
         return dir.list().find(item =>
             item.name === name && FsUtil.isDirectory(item)) as Directory;
+    }
+
+    private removeHelper(name: string, predicate: (item: FsItem) => boolean): void {
+        const path = Path.fromString(name);
+        let dir = path.isAbsolute ? this.root : this.cwd;
+        let index = 0;
+        for (const component of path.components) {
+            if (index === path.components.length - 1) {
+                const item = dir.children.find(item => item.name === component && predicate(item));
+                if (item) {
+                    dir.children.splice(dir.children.indexOf(item), 1);
+                }
+            } else {
+                dir = this.findDir(dir, component);
+                if (!dir) {
+                    return;
+                }
+            }
+            index++;
+        }
     }
 }

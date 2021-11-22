@@ -120,8 +120,22 @@ describe('File System', () => {
         expect(fs.root.list()).toHaveLength(0);
     });
 
-    test('fails to remove a dir if it doesn\'t exist', () => {
+    test('remove is no-op if it doesn\'t exist', () => {
         const fs = new FileSystem();
-        expect(() => fs.removeDir("docs")).toThrowError();
+        expect(() => fs.removeDir("docs")).not.toThrowError();
+        expect(() => fs.removeDir("/tmp/docs")).not.toThrowError();
+    });
+
+    test('can find files', () => {
+        const fs = new FileSystem();
+        fs.createFile("/tmp/foo/bar/xyz.txt");
+        fs.createFile("/tmp/foo/bak/xyz.txt");
+        fs.createFile("/tmp/bar/foo/");
+
+        expect(fs.find("xyz.txt")).toHaveLength(2);
+        expect(fs.find("foo")).toHaveLength(2);
+        expect(fs.find("123")).toHaveLength(0);
+        fs.removeFile("/tmp/foo/bak/xyz.txt");
+        expect(fs.find("xyz.txt")).toHaveLength(1);
     });
 });
