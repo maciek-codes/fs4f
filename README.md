@@ -44,7 +44,7 @@ Example usage:
     fs.changeDir("/tmp");
 
     // List items in a dir
-    fs.currentDir().list().forEach(item => console.log(item.name));
+    fs.currentDir().items.forEach(item => console.log(item.name));
 
     // Remove a directory
     fs.removeDir("/tmp/path"); // path was removed

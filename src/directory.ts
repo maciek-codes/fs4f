@@ -10,7 +10,7 @@ export type FsItem = File | Directory;
 export class Directory {
     public readonly name: string;
     public readonly metadata: Metadata;
-    public children: (FsItem)[];
+    private children: (FsItem)[];
     private parentDir: Directory | null;
     
     constructor(name: string, parent?: Directory) {
@@ -80,9 +80,19 @@ export class Directory {
     }
   
     /**
+     * Remove an item from this directory
+     */
+    public remove(item: FsItem) {
+        const index = this.children.indexOf(item);
+        if (index >= 0) {
+            this.children.splice(index, 1);
+        }
+    }
+
+    /**
      * Return a list with the contents of the directory
      */
-    public list(): FsItem[] {
+    public get items(): FsItem[] {
         return this.children;
     }
 
@@ -91,7 +101,7 @@ export class Directory {
      * @param name name to be checked
      */
     private findExisting(name: string) {
-        for (const item of this.children) {
+        for (const item of this.items) {
             if (item.name === name) {
                 return item;
             }

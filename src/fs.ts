@@ -132,7 +132,7 @@ export class FileSystem {
         while (dirsToCheck.length > 0) {
             const next = dirsToCheck.pop();
             checked.add(next);
-            for (const item of next.list()) {
+            for (const item of next.items) {
                 if (FsUtil.isDirectory(item) && !checked.has(item as Directory)) {
                     dirsToCheck.push(item as Directory);
                 }
@@ -151,7 +151,7 @@ export class FileSystem {
      * Helper for copying contents of directories
      */
     private copyDirHelper(sourceDir: Directory, destDir: Directory) {
-        for (const item of sourceDir.list()) {
+        for (const item of sourceDir.items) {
            if (FsUtil.isDirectory(item)) {
                 this.copyDir(item.name, item.name, sourceDir, destDir)
             } else if (FsUtil.isFile(item)) {
@@ -168,7 +168,7 @@ export class FileSystem {
      * @returns directory found
      */
     private findDir(dir: Directory, name: string): Directory {
-        return dir.list().find(item =>
+        return dir.items.find(item =>
             item.name === name && FsUtil.isDirectory(item)) as Directory;
     }
 
@@ -178,9 +178,9 @@ export class FileSystem {
         let index = 0;
         for (const component of path.components) {
             if (index === path.components.length - 1) {
-                const item = dir.children.find(item => item.name === component && predicate(item));
+                const item = dir.items.find(item => item.name === component && predicate(item));
                 if (item) {
-                    dir.children.splice(dir.children.indexOf(item), 1);
+                    dir.remove(item);
                 }
             } else {
                 dir = this.findDir(dir, component);

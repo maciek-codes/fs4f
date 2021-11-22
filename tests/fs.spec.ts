@@ -7,7 +7,7 @@ describe('File System', () => {
         const fs = new FileSystem();
         const root_dir = fs.root;
         expect(root_dir.path).toBe("/");
-        expect(root_dir.list()).toHaveLength(0);
+        expect(root_dir.items).toHaveLength(0);
         expect(fs.currentDir().path).toBe(root_dir.path);
     });
 
@@ -63,10 +63,10 @@ describe('File System', () => {
         const file = fs.createFile("/tmp/foo.txt");
         expect(file.name).toBe("foo.txt");
         fs.changeDir("/tmp");
-        expect(fs.currentDir().list()).toHaveLength(1);
+        expect(fs.currentDir().items).toHaveLength(1);
 
         fs.createFile("/foo.txt");
-        expect(fs.root.list()).toHaveLength(2);
+        expect(fs.root.items).toHaveLength(2);
     });
 
     test('can create directories from absolute path', () => {
@@ -77,7 +77,7 @@ describe('File System', () => {
 
         // Return a handle to the existing dir
         const fooDir = fs.createDir("/foo");
-        expect(fooDir.list()).toHaveLength(2);
+        expect(fooDir.items).toHaveLength(2);
     });
 
     test('can create directories from relative path', () => {
@@ -97,13 +97,13 @@ describe('File System', () => {
         importantDir.createFile("super-important.xls").write("VIP Info");
 
         const backupDir = fs.copyDir("docs", "docs - backup");
-        expect(fs.root.list()).toContain(backupDir);
+        expect(fs.root.items).toContain(backupDir);
         fs.changeDir("docs - backup");
         expect(fs.currentDir().path).toBe("/docs - backup/");
-        const backupContents = fs.currentDir().list();
+        const backupContents = fs.currentDir().items;
         expect(backupContents).toHaveLength(2);
         fs.changeDir("important");
-        const copiedFile = fs.currentDir().list()[0] as File;
+        const copiedFile = fs.currentDir().items[0] as File;
         expect(copiedFile.name).toBe("super-important.xls");
         expect(copiedFile.contents).toBe("VIP Info");
     });
@@ -117,7 +117,7 @@ describe('File System', () => {
         const fs = new FileSystem();
         fs.root.createDir("docs");
         fs.removeDir("docs");
-        expect(fs.root.list()).toHaveLength(0);
+        expect(fs.root.items).toHaveLength(0);
     });
 
     test('remove is no-op if it doesn\'t exist', () => {
