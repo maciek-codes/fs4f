@@ -108,7 +108,7 @@ export class FileSystem {
         this.removeHelper(name, FsUtil.isDirectory);
     }
 
-    /** Remove a file with a given name if exsits */
+    /** Remove a file with a given name if exists */
     public removeFile(name: string) {
         this.removeHelper(name, FsUtil.isFile);
     }
